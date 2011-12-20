@@ -3,6 +3,7 @@
   <title>Baliga Lab Git Page</title>
   <link href="http://fonts.googleapis.com/css?family=Cabin:regular,bold" rel="stylesheet" type="text/css" />
   <style type="text/css" media="screen">
+    /* taken from example: http://engel.uk.to/ */
     * { margin: 0; padding: 0; }
     body { font-family: Cabin, 'Lucida Grande', Verdana, sans-serif; background-color: #f1f1f1; overflow: auto; color: #444; font-size: 16px; text-shadow: white 0px 1px 0; }
     
@@ -39,19 +40,50 @@
     ul#projects hgroup h4 { margin: 0px; position: absolute; bottom: 0px; right: 0px; color: #aaa; }
     ul#projects h4 { margin-top: 15px; }
 
-    .gist { margin: 10px 0; }
-    .gist-file { border-radius: 10px; font-size: 13px; }
-    .gist-file .gist-data.gist-syntax { border-top-left-radius: 10px; border-top-right-radius: 10px; box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); border-bottom: none !important; }
-    .gist-file .gist-data.gist-syntax::-webkit-scrollbar { width: 7px; height: 7px; }
-    .gist-file .gist-data.gist-syntax::-webkit-scrollbar-button:start:decrement,
-    .gist-file .gist-data.gist-syntax::-webkit-scrollbar-button:end:increment { display: none; }
-    .gist-file .gist-data.gist-syntax::-webkit-scrollbar-track-piece { background: -webkit-gradient(linear, left top, left bottom, from(rgba(202, 202, 202, 0.7)), to(#eaeaea)); }
-    .gist-file .gist-data.gist-syntax::-webkit-scrollbar-thumb:horizontal {
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 3px;
+    /* kfoley css mods */
+    .last-updated {
+      position: relative;
+      width: 220px;
     }
-    .gist-file .gist-meta { border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; }
+
+    .last-commit {
+      position: relative;
+      left: 200px;
+      top: -21px;
+      width: 500px;
+    }
   </style>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      var repo_url = "http://github.com/api/v2/json/repos/show/kfoley/network_portal_django?callback=?";
+      var commit_url = "http://github.com/api/v2/json/commits/list/kfoley/network_portal_django/master?callback=?";
+
+      $.ajax({
+               dataType: 'jsonp',
+               //data: data,
+               jsonp: 'jsonp_callback',
+               url: repo_url, 
+               success: function(data) {
+                 console.log("repo: " + data.repository.pushed_at);
+                 $('.last-updated').html(data.repository.pushed_at);
+               } 
+      });
+
+      $.ajax({
+               dataType: 'jsonp',
+               //data: data,
+               jsonp: 'jsonp_callback',
+               url: commit_url, 
+               success: function(data) {
+                 console.log("commit: " + data.commits[0].message);
+                 $('.last-commit').html(data.commits[0].message);
+               } 
+      });
+
+    });
+    
+  </script>
 </head>
 <body>
   <div id="container">
@@ -64,11 +96,17 @@
 	    <h3><a href="https://github.com/baliga-lab/network_portal">Network Portal</a></h3>
 	    <h4>Python, Django, jQuery, Solr</h4>
 	  </hgroup>
-	  <p>
+	  <h4>Recent Activity</h4>
+	  <div class="last-updated">
+	  </div>
+	  <div class="last-commit">
+	  </div>
+	  <h4>Description</h4>
+	  <div id="content" class"ajax-replace">
 	    The Network Portal project is an application to bring together many data sources that will 
 	    allow a user to search for stored networks, view gene and regulon information about the 
 	    queried network and then eventually annotate the network (to be implemented).
-	  </p>
+	  </div>
 	</li>
 	<li class="project">
 	  <hgroup>
